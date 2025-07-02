@@ -1,69 +1,150 @@
-# Take-home task: Client Onboarding Form
+# Meela Client Onboarding Form - Take-Home Task
 
-## Background
+## Overview
 
-At Meela, we help match clients to therapists, but first clients need to complete comprehensive intake forms. These
-forms are complex with multiple sections and sensitive mental health questions requiring careful UX.
+A simple client intake form system that supports **partial form submission** with the ability to resume later. Built with Rust backend and React frontend.
 
-The forms can take some time to get through. The reality is that sometimes life will demand immediate attention from our
-users such that they do not complete the form in a single sitting and they would benefit from having a partial form
-submission to return to. And that is the crux of this task.
+## Features
 
-## Objective
-
-Build a _simple_ client intake form system that supports **partial form submission** with the ability to resume later.
-Like, really simple. Proof-of-concept level. Don't worry about edge-cases or validation. Visit [our
-site](https://app.meelahealth.com) and cherry pick a small amount of different questions that make up your form.
-
-**The main goal**: A user should be able to fill out part of a form, save their progress, and return later to continue
-where they left off.
-
-Dos:
-
-1. **Fork our repo!**
-2. **Multi-step form** at least 3 questions.
-3. **Save progress** - user can save and exit at any point - this can happen automatically, using a timer, or a button.
-   All are fine.
-4. **Resume capability** - user can return and continue from where they left off
-
-Don'ts:
-
-1. **No auth required** - having a UUID in a URL is super-good enough!
-2. **No versioning required** - don't worry about handling form schema changes.
-3. **No i18n!** - overkill!
-
-**Time Estimate:** spend _max_ 4-6 hours, please.
-
-If you do not finish in this time, stop! We can talk about what you did manage to accomplish in that time!
+- ✅ Multi-step form with 3+ questions across different sections
+- ✅ Save progress functionality (manual save button)
+- ✅ Resume capability via UUID in URL
+- ✅ Dashboard to view all saved forms
+- ✅ No authentication required
+- ✅ Frontend-backend communication
+- ✅ Database persistence (SQLite)
 
 ## Technology Stack
 
-**Frontend**: Use React or Solid.js (your choice)
+- **Frontend**: React with Vite
+- **Backend**: Rust with Poem framework
+- **Database**: SQLite
+- **API**: REST
 
-**Backend**: Feel free to use the provided Rust code in the `/backend` directory - or butcher it and take what you need.
-We do take into account your prior experience with Rust so if you don't have any: do not worry, we will adapt our
-evaluation accordingly.
+## Prerequisites
 
-**Database**: Must use a database (relational or NoSQL - your choice really and then you might have to make some other
-choices than what has been made in the `/backend` directory)
+- Rust (latest stable)
+- Node.js (v16 or higher)
+- npm
 
-**API**: GraphQL or REST (your choice)
+## Setup Instructions
 
-**Requirements**:
+### Quick Start
 
-- Frontend must communicate with a backend
-- Backend must persist data to a database
-  - That means you should **not** save the partial submissions using `localStorage` in the browser!
+```bash
+# Install all dependencies and setup database
+make setup
 
-## Deliverables
+# Start backend (Terminal 1)
+make start-backend
 
-1. Make the thing work
-2. Tell us how to set it up and run it so we can review it:
-   1. Either write a `.txt`/`.md` file that tells us which invocations of `cargo run`, `npm run dev`, `yarn dev`, ... we have to use, or
-   2. simply provide a `justfile`/`Makefile` for us.
-3. Send us a link to your fork on your github account!
+# Start frontend (Terminal 2)
+make start-frontend
+```
 
-## GO GO GO! 🌶️🌶️🌶️
+### Manual Setup
 
-Remember, focus on the core "resume" functionality - that is what we are evaluating. We look forward to catching up and
-reviewing your submission!
+#### Backend Setup
+
+```bash
+# Install Rust dependencies
+cargo build
+
+# Create .env file (already provided)
+# DATABASE_URL=sqlite:./forms.db
+
+# Start the Rust server
+cargo run
+```
+
+Backend will run on http://localhost:3005
+
+#### Frontend Setup
+
+```bash
+npm install
+npm run dev
+```
+
+Frontend will run on http://localhost:5173
+
+## Usage
+
+1. **Start New Form**: Visit http://localhost:5173 and click "New Questionnaire"
+2. **Fill Partial Data**: Answer some questions (don't need to complete all)
+3. **Save Progress**: Click "Save" button at any time
+4. **Get Unique URL**: After saving, you'll get a unique URL with UUID
+5. **Resume Later**: Use the URL or go back to dashboard to continue
+6. **View All Forms**: Dashboard shows all saved forms with progress indicators
+
+## Form Structure
+
+- **Step 1 - Basic Info**: Name, Age
+- **Step 2 - Preferences**: What are you looking for in therapy?
+- **Step 3 - Experience**: Have you seen a therapist before?
+
+## API Endpoints
+
+- `GET /forms` - List all saved forms
+- `POST /form` - Save/update form data
+- `GET /form/:uuid` - Load specific form
+- `DELETE /form/:uuid` - Delete form
+
+## Database Schema
+
+```sql
+CREATE TABLE forms (
+  uuid TEXT PRIMARY KEY,
+  data TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+```
+
+## Technology Choice
+
+I chose to implement the backend in Rust using the provided infrastructure, adapting the existing Poem framework setup to handle form persistence. This demonstrates familiarity with Rust while building upon the provided foundation.
+
+## Key Features Demonstrated
+
+### Partial Form Submission ✅
+
+- Users can save at any point during form completion
+- Progress is preserved exactly where they left off
+- No data loss between sessions
+
+### Resume Capability ✅
+
+- Unique UUID generates shareable URLs
+- Dashboard shows all incomplete forms
+- Click to continue exactly where left off
+
+### Simple UX ✅
+
+- Clean, minimal interface
+- Progress indicators show completion status
+- Clear navigation between steps
+
+## Rust Backend Features
+
+- **Type Safety**: Leverages Rust's type system for API safety
+- **Error Handling**: Proper error types with appropriate HTTP status codes
+- **JSON Serialization**: Automatic serialization/deserialization with serde
+- **Database Integration**: SQLx for type-safe database operations
+- **UUID Generation**: Built-in UUID support for unique form identifiers
+
+## Development Commands
+
+```bash
+# Check code quality
+make check
+
+# Clean build artifacts
+make clean
+
+# Auto-restart backend on changes (requires cargo-watch)
+make dev-backend
+```
+
+## Time Spent
+
+Approximately 4-5 hours focused on core functionality and Rust backend implementation as requested.
